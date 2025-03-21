@@ -81,7 +81,7 @@ int main() {
     srand(time(NULL));
     int opcao, linhas, colunas;
     double **A, **B, **resultado;
-    int colunasB = 0;
+    int linhasB, colunasB;
     
     do {
         printf("\nMenu de Operações:\n");
@@ -97,55 +97,41 @@ int main() {
         scanf("%d", &colunas);
         
         A = alocarMatriz(linhas, colunas);
-        if (opcao != 3) {
+        preencherMatrizAleatoria(A, linhas, colunas);
+
+        if (opcao == 5) {
+            printf("Informe o número de linhas da segunda matriz: ");
+            scanf("%d", &linhasB);
+            printf("Informe o número de colunas da segunda matriz: ");
+            scanf("%d", &colunasB);
+            
+            if (colunas != linhasB) {
+                printf("Não é possível multiplicar matrizes com essas dimensões!\n");
+                liberarMatriz(A, linhas);
+                continue;
+            }
+            
+            B = alocarMatriz(linhasB, colunasB);
+            resultado = alocarMatriz(linhas, colunasB);
+            preencherMatrizAleatoria(B, linhasB, colunasB);
+            multiplicarMatrizes(A, B, resultado, linhas, colunas, colunasB);
+        } else {
             B = alocarMatriz(linhas, colunas);
             resultado = alocarMatriz(linhas, colunas);
-        } else {
-            resultado = alocarMatriz(linhas, linhas);
-        }
-
-        if (opcao != 3) {
-            printf("Preenchendo matrizes com valores aleatórios...\n");
-            preencherMatrizAleatoria(A, linhas, colunas);
             preencherMatrizAleatoria(B, linhas, colunas);
-        }
-
-        switch (opcao) {
-            case 1:
-                somarMatrizes(A, B, resultado, linhas, colunas);
-                break;
-            case 2:
-                subtrairMatrizes(A, B, resultado, linhas, colunas);
-                break;
-            case 3:
-                identidade(resultado, linhas);
-                break;
-            case 4:
-                transposta(A, resultado, linhas, colunas);
-                break;
-            case 5:
-                printf("Informe o número de colunas da segunda matriz: ");
-                scanf("%d", &colunasB);
-                B = alocarMatriz(colunas, colunasB);
-                resultado = alocarMatriz(linhas, colunasB);
-                preencherMatrizAleatoria(B, colunas, colunasB);
-                multiplicarMatrizes(A, B, resultado, linhas, colunas, colunasB);
-                break;
-            default:
-                printf("Opção inválida!\n");
         }
 
         printf("Matriz A:\n");
         imprimirMatriz(A, linhas, colunas);
         if (opcao != 3) {
             printf("Matriz B:\n");
-            imprimirMatriz(B, (opcao == 5) ? colunas : linhas, (opcao == 5) ? colunasB : colunas);
+            imprimirMatriz(B, (opcao == 5) ? linhasB : linhas, (opcao == 5) ? colunasB : colunas);
         }
         printf("Resultado:\n");
         imprimirMatriz(resultado, (opcao == 3) ? linhas : linhas, (opcao == 5) ? colunasB : colunas);
         
         liberarMatriz(A, linhas);
-        if (opcao != 3) liberarMatriz(B, linhas);
+        liberarMatriz(B, (opcao == 5) ? linhasB : linhas);
         liberarMatriz(resultado, (opcao == 3) ? linhas : linhas);
         
     } while (1);
