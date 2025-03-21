@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 double** alocarMatriz(int linhas, int colunas) {
     double** matriz = (double**)malloc(linhas * sizeof(double*));
@@ -16,11 +17,10 @@ void liberarMatriz(double** matriz, int linhas) {
     free(matriz);
 }
 
-void lerMatriz(double** matriz, int linhas, int colunas) {
+void preencherMatrizAleatoria(double** matriz, int linhas, int colunas) {
     for (int i = 0; i < linhas; i++) {
         for (int j = 0; j < colunas; j++) {
-            printf("Elemento [%d][%d]: ", i, j);
-            scanf("%lf", &matriz[i][j]);
+            matriz[i][j] = (rand() % 100) / 10.0;
         }
     }
 }
@@ -78,6 +78,7 @@ void multiplicarMatrizes(double** A, double** B, double** resultado, int linhasA
 }
 
 int main() {
+    srand(time(NULL));
     int opcao, linhas, colunas;
     double **A, **B, **resultado;
     int colunasB = 0;
@@ -104,10 +105,9 @@ int main() {
         }
 
         if (opcao != 3) {
-            printf("Digite os elementos da primeira matriz:\n");
-            lerMatriz(A, linhas, colunas);
-            printf("Digite os elementos da segunda matriz:\n");
-            lerMatriz(B, linhas, colunas);
+            printf("Preenchendo matrizes com valores aleatórios...\n");
+            preencherMatrizAleatoria(A, linhas, colunas);
+            preencherMatrizAleatoria(B, linhas, colunas);
         }
 
         switch (opcao) {
@@ -128,14 +128,19 @@ int main() {
                 scanf("%d", &colunasB);
                 B = alocarMatriz(colunas, colunasB);
                 resultado = alocarMatriz(linhas, colunasB);
-                printf("Digite os elementos da segunda matriz:\n");
-                lerMatriz(B, colunas, colunasB);
+                preencherMatrizAleatoria(B, colunas, colunasB);
                 multiplicarMatrizes(A, B, resultado, linhas, colunas, colunasB);
                 break;
             default:
                 printf("Opção inválida!\n");
         }
 
+        printf("Matriz A:\n");
+        imprimirMatriz(A, linhas, colunas);
+        if (opcao != 3) {
+            printf("Matriz B:\n");
+            imprimirMatriz(B, (opcao == 5) ? colunas : linhas, (opcao == 5) ? colunasB : colunas);
+        }
         printf("Resultado:\n");
         imprimirMatriz(resultado, (opcao == 3) ? linhas : linhas, (opcao == 5) ? colunasB : colunas);
         
